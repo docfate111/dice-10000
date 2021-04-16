@@ -15,10 +15,12 @@ adding to a running total
 - [ ] Flask backend
 
 # Strategies
-- [ X ] Only roll until the score of the turn is up to one number(i.e. 500)
-- [ ] Only roll until the score of the turn is up to one number(i.e. 500), don't take triples unless its the last round of your turn
-- [ ] Only roll if you have a certain number of dice(1-6)
-- [ ] Only roll if you have a certain number of dice(1-6), don't take any triples
+- [X] Strategy A: Only roll until the score of the turn is up to one number(i.e. 500)
+- [X] Strategy B: Only roll if you have a certain number of dice(1-6)
+- [ ] Strategy C: Same as A but don't take triple 5
+- [ ] Strategy D: Same as A but don't take triple 5 or triple 1
+- [ ] Strategy E: Same as B but don't take triple 5
+- [ ] Strategy F: Same as B but don't take triple 5 or triple 1
 - [ ] Last round/endgame strategy
 - [ ] User input player object to connect with front-end
 
