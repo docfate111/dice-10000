@@ -272,8 +272,17 @@ class BotPlayer:
 
 
 if __name__ == "__main__":
-    # pts, remaining = score_die500([5, 5, 5, 5, 5, 5])
-    # pts, remaining = score_die500([5, 5, 5, 1, 1, 1])
-    # pts, remaining = score_die500([5, 5, 5, 5, 2, 4])
-    # pts, remaining = score_die500([5, 5, 5, 2, 3, 3])
-    # pts, remaining = score_die500([4, 4, 4, 2, 2, 3])
+    pts, remaining = score_die500([5, 5, 5, 5, 5, 5])
+    assert(pts==1000)
+    assert(remaining==0)
+    pts, remaining = score_die500([5, 5, 5, 1, 1, 1])
+    assert(pts==1500)
+    assert(remaining==0)
+    pts, remaining = score_die500([5, 5, 5, 5, 2, 4])
+    assert(pts==500)
+    assert(remaining==3)
+    pts, remaining = score_die500([5, 5, 5, 2, 3, 3])
+    assert(pts==50)
+    assert(remaining==5)
+    pts, remaining = score_die500([4, 4, 4, 2, 2, 3])
+    pts, remaining = score_die500([5, 4, 4, 2, 2, 2])
