@@ -109,25 +109,39 @@ def simulate(num_games: int) -> dict:
         win_counts[str(int(player.getName()) + 1)] /= count_
     return win_counts
 
+def simulate_2stratAplayers(num_games: int, up_to1: int, up_to2: int) -> dict:
+    count_ = 0
+    win_counts = {0: 0, 1: 0}
+    while count_ < num_games:
+        g = BotGame(score_to_stop_at_each_turn=[up_to1, up_to2])
+        for winner in g.playGame():
+            win_counts[int(winner.getName())] += 1
+        count_ += 1
+    for i in range(len(win_counts.keys())):
+        win_counts[i] /= count_
+    return win_counts
 
 class BotGame:
     def __init__(
         self,
-        num_of_players_to_generate=2,
+        num_of_players_to_generate=0,
         ending_score=10000,
-        score_to_stop_at_each_turn=[500, 100],
+        score_to_stop_at_each_turn=[],
         playersToAdd=[]
     ):
         random.seed(os.urandom(16))
-        self.num_of_players = num_of_players_to_generate+len(playersToAdd)
+        if score_to_stop_at_each_turn:
+            self.num_of_players = len(score_to_stop_at_each_turn)
+        else:
+            self.num_of_players = 2
         self.ending_score = ending_score
-        self.players = []
         self.isFinalRound = False
         self.highestScore = -math.inf
         self.round = 0
+        self.winners = []
         self.game_over = False
-        self.winners = playersToAdd
-        for i in range(num_of_players_to_generate):
+        self.players = playersToAdd
+        for i in range(self.num_of_players):
             self.players.append(
                 BotPlayer(
                     ending_score=ending_score,
@@ -135,6 +149,8 @@ class BotGame:
                     score_to_stop_at_each_turn=score_to_stop_at_each_turn[i],
                 )
             )
+        for player in self.players:
+            player.reset()
 
     def __next__(self):
         self.round += 1
@@ -146,16 +162,19 @@ class BotGame:
             if self.players[i].getScore() > self.ending_score:
                 self.game_over = True
                 self.winners.append(self.players[i])
+                self.highestScore = max(self.highestScore, self.players[i].getScore())
         self.scoreboard()
-        if self.game_over:
-            for w in self.winners:
-                print(f"Player {int(w.playerName)+1} won with {w.getScore()} points")
         return self.round
 
     def playGame(self):
+        winners = []
         while not self.game_over:
             next(self)
-        return self.winners
+        for w in self.winners:
+            if w.getScore()==self.highestScore:
+                print(f"Player {int(w.playerName)+1} won with {w.getScore()} points")
+                winners.append(w)
+        return winners
 
     def getPlayers(self):
         return self.players
@@ -198,6 +217,11 @@ class BotPlayer:
                 self.strategy = 'A'
         else:
             self.strategy = strategy
+
+    def reset(self):
+        self.score = 0
+        self.turns = 0
+        self.game_over = False
 
     def __iter__(self):
         return self
@@ -272,17 +296,4 @@ class BotPlayer:
 
 
 if __name__ == "__main__":
-    pts, remaining = score_die500([5, 5, 5, 5, 5, 5])
-    assert(pts==1000)
-    assert(remaining==0)
-    pts, remaining = score_die500([5, 5, 5, 1, 1, 1])
-    assert(pts==1500)
-    assert(remaining==0)
-    pts, remaining = score_die500([5, 5, 5, 5, 2, 4])
-    assert(pts==500)
-    assert(remaining==3)
-    pts, remaining = score_die500([5, 5, 5, 2, 3, 3])
-    assert(pts==50)
-    assert(remaining==5)
-    pts, remaining = score_die500([4, 4, 4, 2, 2, 3])
-    pts, remaining = score_die500([5, 4, 4, 2, 2, 2])
+    print(simulate_2stratAplayers(3, 100, 500))
