@@ -116,14 +116,18 @@ def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     up_to1 = int(up_to1)
     up_to2 = int(up_to2)
     count_ = 0
-    win_counts = {0: 0, 1: 0}
+    win_counts = {'a': 0, 'b': 0}
     while count_ < num_games:
         g = BotGame(score_to_stop_at_each_turn=[up_to1, up_to2])
         for winner in g.playGame():
-            win_counts[int(winner.getName())] += 1
+            # print(winner.getName())
+            if int(winner.getName())==0:
+                win_counts['a'] += 1
+            else:
+                win_counts['b'] += 1
         count_ += 1
-    for i in range(len(win_counts.keys())):
-        win_counts[i] /= count_
+    win_counts['a'] /= count_
+    win_counts['b'] /= count_
     return win_counts
 
 
@@ -146,8 +150,8 @@ class BotGame:
         self.round = 0
         self.winners = []
         self.game_over = False
-        self.players = playersToAdd
         self.verbose = False
+        self.players = []
         for i in range(self.num_of_players):
             self.players.append(
                 BotPlayer(
@@ -156,8 +160,9 @@ class BotGame:
                     score_to_stop_at_each_turn=score_to_stop_at_each_turn[i],
                 )
             )
-        for player in self.players:
-            player.reset()
+        # for i, player in enumerate(self.players):
+        #     # print(i)
+        #     # player.reset(score_to_stop_at_each_turn[i])
 
     def __next__(self):
         self.round += 1
@@ -225,14 +230,6 @@ class BotPlayer:
                 self.strategy = "A"
         else:
             self.strategy = strategy
-
-    def reset(self):
-        self.score = 0
-        self.turns = 0
-        self.game_over = False
-
-    def __iter__(self):
-        return self
 
     def __next__(self):
         """
@@ -305,4 +302,7 @@ class BotPlayer:
 
 
 # if __name__ == "__main__":
-#     if self.verbose: print(simulate_2stratAplayers(3, 100, 500))
+    # print(simulate_2stratAplayers(100, 100, 5000))
+    # print(simulate_2stratAplayers(100, 5000, 100))
+    # print(simulate_2stratAplayers(100, 5000, 100))
+    # print(simulate_2stratAplayers(100, 100, 5000))

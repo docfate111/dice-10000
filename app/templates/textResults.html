@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Your translated text:</h2>
+    <div><p>Number of games simulated: {{num_games}}</p></div>
+    <div><p>Player 1's strategy is to roll until they either get 0 or get: {{player1_stoppingscore}}</p></div>
+    <div><p>Player 2's strategy is to roll until they either get 0 or get: {{player2_stoppingscore}}</p></div>
+    <link rel="stylesheet" href="../css/styles.css">
+    <h2>Winning frequencies:</h2>
     <div><p>{{new_text}}</p></div>
 {% endblock %}
