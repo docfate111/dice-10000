@@ -145,3 +145,30 @@ def text5():
         form_title="Simulate several games to find the best number of dice to stop at for each turn (based on your opponent)",
         label1="(Optional) Number of dice for player 1",
     )
+@app.route("/rules", methods=["GET"])
+def text6():
+    return render_template(
+        "rules.html",
+    )
+ 
+@app.route("/demo", methods=["GET", "POST"])
+def text7():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        player1_stoppingscore = request.form["player1_stoppingscore"]
+        player2_stoppingscore = request.form["player2_stoppingscore"]
+        res = dicethousand.simulate_2stratAplayers(
+            num_games, player1_stoppingscore, player2_stoppingscore
+        )
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+            player1_stoppingscore=player1_stoppingscore,
+            player2_stoppingscore=player2_stoppingscore,
+        )
+    return render_template(
+        "demo.html",
+    )
+
+
