@@ -154,18 +154,14 @@ def text6():
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
     if request.method == "POST":
-        num_games = request.form["num_games"]
-        player1_stoppingscore = request.form["player1_stoppingscore"]
-        player2_stoppingscore = request.form["player2_stoppingscore"]
-        res = dicethousand.simulate_2stratAplayers(
-            num_games, player1_stoppingscore, player2_stoppingscore
-        )
+        num_dice = int(request.form["num_dice"])
+        res = dicethousand.roll_n_die(num_dice)
+        print(res)
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
-            player1_stoppingscore=player1_stoppingscore,
-            player2_stoppingscore=player2_stoppingscore,
+            "demoResults.html",
+            res=res,
+            num_dice=num_dice,
+            die=[1, 2, 3, 4, 5, 6]
         )
     return render_template(
         "demo.html",

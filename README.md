@@ -1,5 +1,5 @@
 # dice-10000
-TBD CS 181Y project (TODO: change this later)
+CS 181Y/35 project Harvey Mudd
 
 https://en.wikipedia.org/wiki/Dice_10000
 
@@ -17,12 +17,10 @@ adding to a running total
 # Strategies
 - [X] Strategy A: Only roll until the score of the turn is up to one number(i.e. 500)
 - [X] Strategy B: Only roll if you have a certain number of dice(1-6)
-- [ ] Strategy C: Same as A but don't take triples unless you have to
-- [ ] Strategy D: Same as A but don't take triples unless you have to or its 500, 600, or 1000
-- [ ] Strategy E: Same as B but don't take triple unless you have to
-- [ ] Strategy F: Same as B but don't take triple unless you have to or its 500, 600, or 1000
-- [ ] Last round/endgame strategy
 - [ ] User input player object to connect with front-end
+- [ ] Strategy C: Same as A but don't take triples unless you have to or its 500, 600, or 1000
+- [ ] Strategy D: Same as B but don't take triple unless you have to or its 500, 600, or 1000
+- [ ] Last round/endgame strategy/rules
 
 # Additional rules(the game's rules and names vary a lot)
 - [ ] On the 1st turn you must roll until you reach 500 "to get on the board"
