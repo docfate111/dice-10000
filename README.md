@@ -12,7 +12,7 @@ adding to a running total
 
 # Add later
 - [ ] Front-end
-- [ ] Flask backend
+- [X] Flask backend
 
 # Strategies
 - [X] Strategy A: Only roll until the score of the turn is up to one number(i.e. 500)

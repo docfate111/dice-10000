@@ -23,7 +23,7 @@ def index():
     return render_template("index.html", title="Home")
 
 
-# Pig latin page, when we click translate, moves to text result page
+# play 2 strategy A players
 @app.route("/AA", methods=["GET", "POST"])
 def text():
     if request.method == "POST":
@@ -33,7 +33,6 @@ def text():
         res = dicethousand.simulate_2stratAplayers(
             num_games, player1_stoppingscore, player2_stoppingscore
         )
-        print(res)
         return render_template(
             "textResults.html",
             new_text=str(res),
@@ -44,11 +43,59 @@ def text():
     return render_template("text.html", title="Home")
 
 
-# @app.route("/AB", methods=["GET", "POST"])
-# def text():
+# strategy A vs strategy B who wins!
+@app.route("/AB", methods=["GET", "POST"])
+def text2():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        player1_stoppingscore = request.form["player1_stoppingscore"]
+        player2_stoppingscore = request.form["player2_stoppingscore"]
+        res = dicethousand.simulate_stratABplayers(
+            num_games, player1_stoppingscore, player2_stoppingscore
+        )
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+            player1_stoppingscore=player1_stoppingscore,
+            player2_stoppingscore=player2_stoppingscore,
+        )
+    return render_template("text.html", title="Home")
 
-# @app.route("/BB", methods=["GET", "POST"])
-# def text():
 
-# @app.route("/playAI", methods=["GET", "POST"])
-# def text():
+# 2 strategy B players face off
+@app.route("/BB", methods=["GET", "POST"])
+def text3():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        player1_stoppingscore = request.form["player1_stoppingscore"]
+        player2_stoppingscore = request.form["player2_stoppingscore"]
+        res = dicethousand.simulate_stratABplayers(
+            num_games, player1_stoppingscore, player2_stoppingscore
+        )
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+            player1_stoppingscore=player1_stoppingscore,
+            player2_stoppingscore=player2_stoppingscore,
+        )
+    return render_template("text.html", title="Home")
+
+
+@app.route("/bestA", methods=["GET", "POST"])
+def text4():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        player1_stoppingscore = request.form["player1_stoppingscore"]
+        if player1_stoppingscore:
+            res = dicethousand.findbeststratA(num_games, player1_stoppingscore)
+        else:
+            res = dicethousand.findbeststratA(num_games)
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+            player1_stoppingscore=player1_stoppingscore,
+        )
+    return render_template("text.html", title="Home")

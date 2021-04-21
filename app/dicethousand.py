@@ -95,7 +95,17 @@ def score_die(dice: list) -> tuple:
 #                     else:
 #                         if self.verbose: print('Choice not in dice')
 #                 pts, remaining = score_die(dice_rolled)
-# def findbeststratA(num_of_games: int):
+def findbeststratA(num_of_games: str, other_player_stops_at=500):
+    stopscores_to_winratio = {}
+    for stopscore in range(50, 900, 50):
+        res = simulate_2stratAplayers(
+            int(num_of_games), int(other_player_stops_at), stopscore
+        )
+        stopscores_to_winratio[stopscore] = res["b"]
+        # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
+    return stopscores_to_winratio
+
+
 def simulate(num_games: int) -> dict:
     count_ = 0
     win_counts = {}
@@ -139,8 +149,25 @@ def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> d
     player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), strategy="B")
     win_counts = {"a": 0, "b": 0}
     while count_ < num_games:
-        # player_A.reset()
-        # player_B.reset()
+        g = BotGame(playersToAdd=[player_A, player_B])
+        for winner in g.playGame():
+            if int(winner.getName()) == 0:
+                win_counts["a"] += 1
+            else:
+                win_counts["b"] += 1
+        count_ += 1
+    win_counts["a"] /= count_
+    win_counts["b"] /= count_
+    return win_counts
+
+
+def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: str):
+    num_games = int(num_games)
+    count_ = 0
+    player_A = BotPlayer(name="0", stop_at_n_dice=int(dicetostopat1), strategy="B")
+    player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), strategy="B")
+    win_counts = {"a": 0, "b": 0}
+    while count_ < num_games:
         g = BotGame(playersToAdd=[player_A, player_B])
         for winner in g.playGame():
             if int(winner.getName()) == 0:
@@ -201,8 +228,8 @@ class BotGame:
                     print("Game over in __next__")
                 self.winners.append(self.players[i])
                 self.highestScore = max(self.highestScore, self.players[i].getScore())
-        # if self.verbose:
-        self.scoreboard()
+        if self.verbose:
+            self.scoreboard()
         return self.round
 
     def playGame(self):
@@ -225,11 +252,9 @@ class BotGame:
         return self.winners
 
     def scoreboard(self):
-        # if self.verbose:
         print("Scoreboard")
         print("=" * 20)
         for i in range(self.num_of_players):
-            # if self.verbose:
             print(f"Player {i+1} has {self.players[i].getScore()} points")
 
 
@@ -356,12 +381,13 @@ class BotPlayer:
         return self.playerName
 
 
-if __name__ == "__main__":
-    print(simulate_stratABplayers(15, 300, 3))
-    print(simulate_stratABplayers(50, 1000, 3))
-    # print(simulate_stratABplayers(50, 100, 5))
-    # print(simulate_2stratAplayers(100, 100, 5000))
-    # print(simulate_2stratAplayers(100, 5000, 100))
-    # print(simulate_2stratAplayers(100, 5000, 100))
-    # print(simulate_2stratAplayers(100, 100, 5000))
-    # print(findbeststratA(100)) -> num_of_games: int
+# if __name__ == "__main__":
+#     print(findbeststratA(50, 600))
+# print(simulate_stratABplayers(15, 300, 3))
+# print(simulate_stratABplayers(50, 1000, 3))
+# print(simulate_stratABplayers(50, 100, 5))
+# print(simulate_2stratAplayers(100, 100, 5000))
+# print(simulate_2stratAplayers(100, 5000, 100))
+# print(simulate_2stratAplayers(100, 5000, 100))
+# print(simulate_2stratAplayers(100, 100, 5000))
+# print(findbeststratA(100)) -> num_of_games: int
