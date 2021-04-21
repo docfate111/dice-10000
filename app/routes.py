@@ -40,7 +40,13 @@ def text():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("form3inputs.html", title="Home")
+    return render_template(
+        "form3inputs.html",
+        title="Home",
+        form_title="Simulate 2 players who roll until they reach a certain score each turn",
+        label1="Score for player 1 to stop at each turn",
+        label2="Score for player 2 to stop at each turn",
+    )
 
 
 # strategy A vs strategy B who wins!
@@ -60,7 +66,13 @@ def text2():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("form3inputs.html", title="Home")
+    return render_template(
+        "form3inputs.html",
+        title="Home",
+        form_title="Simulate a player who rolls until they have a certain amount of dice each turn against one who rolls until they reach a certain score each turn",
+        label1="Score for player 1 to stop at each turn",
+        label2="Number of dice for player 2 to stop at each turn",
+    )
 
 
 # 2 strategy B players face off
@@ -80,7 +92,13 @@ def text3():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("form3inputs.html", title="Home")
+    return render_template(
+        "form3inputs.html",
+        title="Home",
+        form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
+        label1="Number of dice for player 1 to stop at each turn",
+        label2="Number of dice for player 2 to stop at each turn",
+    )
 
 
 @app.route("/bestA", methods=["GET", "POST"])
@@ -98,7 +116,12 @@ def text4():
             num_games=num_games,
             player1_stoppingscore=player1_stoppingscore,
         )
-    return render_template("form3inputs.html", title="Home")
+    return render_template(
+        "form2inputs.html",
+        title="Home",
+        form_title="Simulate several games to find the best score to stop at for each turn (based on your opponent)",
+        label1="(Optional) Stopping score for player 1",
+    )
 
 
 @app.route("/bestB", methods=["GET", "POST"])
@@ -116,4 +139,9 @@ def text5():
             num_games=num_games,
             player1_stoppingscore=player1_stoppingscore,
         )
-    return render_template("form3inputs.html", title="Home")
+    return render_template(
+        "form2inputs.html",
+        title="Home",
+        form_title="Simulate several games to find the best number of dice to stop at for each turn (based on your opponent)",
+        label1="(Optional) Number of dice for player 1",
+    )
