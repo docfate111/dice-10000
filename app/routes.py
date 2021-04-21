@@ -40,7 +40,7 @@ def text():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("text.html", title="Home")
+    return render_template("form3inputs.html", title="Home")
 
 
 # strategy A vs strategy B who wins!
@@ -60,7 +60,7 @@ def text2():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("text.html", title="Home")
+    return render_template("form3inputs.html", title="Home")
 
 
 # 2 strategy B players face off
@@ -80,7 +80,7 @@ def text3():
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
         )
-    return render_template("text.html", title="Home")
+    return render_template("form3inputs.html", title="Home")
 
 
 @app.route("/bestA", methods=["GET", "POST"])
@@ -98,4 +98,22 @@ def text4():
             num_games=num_games,
             player1_stoppingscore=player1_stoppingscore,
         )
-    return render_template("text.html", title="Home")
+    return render_template("form3inputs.html", title="Home")
+
+
+@app.route("/bestB", methods=["GET", "POST"])
+def text5():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        player1_stoppingscore = request.form["player1_stoppingscore"]
+        if player1_stoppingscore:
+            res = dicethousand.findbeststratB(num_games, player1_stoppingscore)
+        else:
+            res = dicethousand.findbeststratB(num_games)
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+            player1_stoppingscore=player1_stoppingscore,
+        )
+    return render_template("form3inputs.html", title="Home")

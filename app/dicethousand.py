@@ -106,6 +106,16 @@ def findbeststratA(num_of_games: str, other_player_stops_at=500):
     return stopscores_to_winratio
 
 
+def findbeststratB(num_of_games: str, stopdice1=2):
+    # find the best strategy for B
+    stopscores_to_winratio = {}
+    for stopdice in range(0, 7):
+        res = simulate_2stratBplayers(int(num_of_games), int(stopdice1), stopdice)
+        stopscores_to_winratio[stopdice] = res["b"]
+        # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
+    return stopscores_to_winratio
+
+
 def simulate(num_games: int) -> dict:
     count_ = 0
     win_counts = {}
@@ -382,7 +392,7 @@ class BotPlayer:
 
 
 # if __name__ == "__main__":
-#     print(findbeststratA(50, 600))
+#     print(findbeststratB(5))
 # print(simulate_stratABplayers(15, 300, 3))
 # print(simulate_stratABplayers(50, 1000, 3))
 # print(simulate_stratABplayers(50, 100, 5))
