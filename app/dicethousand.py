@@ -392,7 +392,6 @@ class BotPlayer:
 
 
 # if __name__ == "__main__":
-#     print(findbeststratB(5))
 # print(simulate_stratABplayers(15, 300, 3))
 # print(simulate_stratABplayers(50, 1000, 3))
 # print(simulate_stratABplayers(50, 100, 5))
