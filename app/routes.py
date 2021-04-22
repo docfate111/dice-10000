@@ -156,62 +156,9 @@ cache = {}
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
     global cache
-    msg = ''
     if request.method == "POST":
         resp = request.form.getlist('hello')
         resp = list(map(lambda x: int(x), resp))
-        if len(resp)==0:
-                msg = 'You must choose a dice'
-                return render_template(
-                    "demoResults.html",
-                    num_dice=cache['remaining'],
-                    res=['rolled_die'],
-                    die=cache['die'],
-                    total_score=cache['user_score_total'],
-                    pts=cache['user_score_round'],
-                    round=cache['current_round'],
-                    message=msg,
-                )
-        if request.form.getlist('end'):
-            # tell user their turn ended
-            msg += 'You ended your turn'
-            print('You ended your turn')
-            # add score for the round
-            pts_round, _ = dicethousand.score_die(resp)
-            cache['user_score_round'] += pts_round
-            cache['user_score_total'] += cache['user_score_round']
-            # roll for computer and save it to list to display to the use
-            # set the score for the next round to 0
-            cache['user_score_round'] = 0
-            cache['current_round'] += 1
-            cache['remaining'] = 6
-        else:
-            resp = list(map(lambda x: int(x), resp))
-            pts_round, r = dicethousand.score_die(resp)
-            print(f'resp: {resp}, remaining: {cache["remaining"]}')
-            cache['remaining'] -= len(resp)
-            cache['remaining'] += r
-            print(f'remaining: {cache["remaining"]}')
-            if pts_round == 0:
-                # turn is over and there are no points for this round
-                print('Turn is over')
-                msg += 'Turn is over and all points were lost for the round :('
-                # roll for computer and save it to list to display to the use
-                # set the score for the next round
-                cache['user_score_round'] = 0
-                cache['remaining'] = 6
-                cache['current_round'] += 1
-            elif cache['remaining'] == 0 and pts_round!=0:
-                print('All dice used, rollover')
-                # roll over points
-                cache['remaining'] = 6
-                cache['user_score_round'] += pts_round
-            else:
-                cache['user_score_round'] += pts_round
-        remaining = cache['remaining']
-        rolled_die = dicethousand.roll_n_die(remaining)
-        die = [i for i in range(1, cache['remaining']+1)]
-        cache['die'] = die
         return render_template(
                 "demoResults.html",
                 num_dice=cache['remaining'],
@@ -222,8 +169,7 @@ def text7():
                 round=cache['current_round'],
                 message=msg,
                 )
-    cache = {'remaining': 6, 'rolled_die': 0, 'die': [], 'user_score_round': 0, 'user_score_total': 0, 'computer_score_round': 0, 'computer_score_total': 0, 'current_round': 0}
-    return render_template(
+        return render_template(
         "demoResults.html",
         num_dice=6,
         res = dicethousand.roll_n_die(6),

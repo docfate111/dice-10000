@@ -3,7 +3,6 @@ import os
 import math
 from collections import Counter
 
-
 def roll_n_die(n: int) -> list:
     """
     simulate rolling the dice 3 times
@@ -13,7 +12,6 @@ def roll_n_die(n: int) -> list:
         dice.append(random.randint(1, 6))
     dice.sort()
     return dice
-
 
 def score_die(dice: list) -> tuple:
     """
@@ -48,53 +46,6 @@ def score_die(dice: list) -> tuple:
             rest.append(dice.pop())
     return (pts, len(rest) + len(dice))
 
-
-# class UserPlayer:
-#     def __init__(self, s=500, ws=10000, name="p1"):
-#         """
-#         add more strategies for computer to use
-#         """
-#         self.score = 0
-#         self.turns = 0
-#         self.num_of_dice = 6
-#         self.playerName = name
-#         self.score_to_stop_at_turn = s
-#         self.game_end_score = ws
-
-#     def __next__(self, num_of_dice):
-#         """
-#         does a simple role
-#         TODO: create other functions to interact with user
-#         """
-#         dice_rolled = roll_n_die(num_of_dice)
-#         return score_die(dice_rolled)
-
-#     def getScore(self):
-#         return self.score
-
-
-# logic for user input -> rewrite for the front-end
-# if self.verbose: print('Do you want to end your turn(y/n)?')
-#                 resp = str(input())
-#                 if 'y' in resp or 'Y' in resp:
-#                     if self.verbose: print('Ending your turn')
-#                     self.score += pts
-#                     return pts
-#                 while True:
-#                     if self.verbose: print('How many die to use in the next roll?')
-#                     n = int(input())
-#                     if n < 1:
-#                         if self.verbose: print('Invalid choice. Try again')
-#                     else:
-#                         break
-#                 for i in range(n):
-#                     if self.verbose: print(f'Removing dice {i+1} of {n}\nPrint number to remove:')
-#                     x = int(input())
-#                     if x in dice_rolled:
-#                         dice_rolled.remove(x)
-#                     else:
-#                         if self.verbose: print('Choice not in dice')
-#                 pts, remaining = score_die(dice_rolled)
 def findbeststratA(num_of_games: str, other_player_stops_at=500):
     stopscores_to_winratio = {}
     for stopscore in range(50, 900, 50):
@@ -105,7 +56,6 @@ def findbeststratA(num_of_games: str, other_player_stops_at=500):
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
 
-
 def findbeststratB(num_of_games: str, stopdice1=2):
     # find the best strategy for B
     stopscores_to_winratio = {}
@@ -114,7 +64,6 @@ def findbeststratB(num_of_games: str, stopdice1=2):
         stopscores_to_winratio[stopdice] = res["b"]
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
-
 
 def simulate(num_games: int) -> dict:
     count_ = 0
@@ -130,7 +79,6 @@ def simulate(num_games: int) -> dict:
     for player in g.getPlayers():
         win_counts[str(int(player.getName()) + 1)] /= count_
     return win_counts
-
 
 def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     num_games = int(num_games)
@@ -151,7 +99,6 @@ def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     win_counts["b"] /= count_
     return win_counts
 
-
 def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> dict:
     num_games = int(num_games)
     count_ = 0
@@ -170,7 +117,6 @@ def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> d
     win_counts["b"] /= count_
     return win_counts
 
-
 def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: str):
     num_games = int(num_games)
     count_ = 0
@@ -188,7 +134,6 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
     win_counts["a"] /= count_
     win_counts["b"] /= count_
     return win_counts
-
 
 class BotGame:
     def __init__(
@@ -266,7 +211,6 @@ class BotGame:
         print("=" * 20)
         for i in range(self.num_of_players):
             print(f"Player {i+1} has {self.players[i].getScore()} points")
-
 
 class BotPlayer:
     def __init__(
@@ -390,13 +334,53 @@ class BotPlayer:
     def getName(self):
         return self.playerName
 
+class UserPlayer:
+    def __init__(self, s=500, ws=10000, name="p1"):
+        self.total_score = 0
+        self.round_score = 0
+        self.turns = 0
+        self.num_of_dice = 6
+        self.playerName = name
+        self.game_end_score = ws
+        self.rolled_die = []
+        self.game_over = False
 
-# if __name__ == "__main__":
-# print(simulate_stratABplayers(15, 300, 3))
-# print(simulate_stratABplayers(50, 1000, 3))
-# print(simulate_stratABplayers(50, 100, 5))
-# print(simulate_2stratAplayers(100, 100, 5000))
-# print(simulate_2stratAplayers(100, 5000, 100))
-# print(simulate_2stratAplayers(100, 5000, 100))
-# print(simulate_2stratAplayers(100, 100, 5000))
-# print(findbeststratA(100)) -> num_of_games: int
+    def roll(self):
+        print(f'rolling {self.num_of_dice}')
+        die_rolled = roll_n_die(self.num_of_dice)
+        self.rolled_die = die_rolled
+        return die_rolled
+        
+    def process_roll(self, die_to_take, end_turn):
+        pts, rem = score_die(die_to_take)
+        self.round_score += pts
+        self.num_of_dice -= len(dice_to_take)
+        self.num_of_dice += rem
+        if not end_turn:
+            print(f'{self.num_of_dice} left to roll')
+        else:
+            self.num_of_dice = 6
+            self.total_score += self.round_score
+            self.round_score = 0
+        
+
+    def getScore(self):
+        return self.score
+    
+    def gameOver(self):
+        return self.game_over
+    
+if __name__ == "__main__":
+    # logic for user input -> rewrite for the front-end
+    u = UserPlayer()
+    while not u.gameOver():
+        die_rolled = u.roll()
+        print(f'You rolled: {die_rolled}')
+        print('List of dice to take(i.e. 1,2,3): ')
+        die_to_score = str(input()).split(',')
+        print('Do you want to end your turn(y/n)?')
+        endturn = 'y' in str(input())
+        u.process_roll(die_to_score, endturn)
+        
+        
+    
