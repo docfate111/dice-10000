@@ -143,6 +143,23 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
     win_counts["b"] /= count_
     return win_counts
 
+def simulate_2stratBvsABplayers(num_games: str, dicetostopat1: str, dicetostopat2: str, score_to_stop_at_turn: str):
+    num_games = int(num_games)
+    count_ = 0
+    player_A = BotPlayer(name="0", stop_at_n_dice=int(dicetostopat1), strategy="B")
+    player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), score_to_stop_at_each_turn=int(score_to_stop_at_turn), strategy="AB")
+    win_counts = {"a": 0, "b": 0}
+    while count_ < num_games:
+        g = BotGame(playersToAdd=[player_A, player_B])
+        for winner in g.playGame():
+            if int(winner.getName()) == 0:
+                win_counts["a"] += 1
+            else:
+                win_counts["b"] += 1
+        count_ += 1
+    win_counts["a"] /= count_
+    win_counts["b"] /= count_
+    return win_counts
 
 class BotGame:
     def __init__(
@@ -339,7 +356,6 @@ class BotPlayer:
                 if self.verbose:
                     print(f"{self.playerName}'s score is {score}")
                 dice_rolled = roll_n_die(num_of_dice)
-                rolls.append(dice_rolled.copy())
                 if self.verbose:
                     print(f"{self.playerName} rolled {dice_rolled}")
                 pts, remaining = score_die(dice_rolled)
@@ -580,8 +596,8 @@ class LoudBotPlayer:
     def getName(self):
         return self.playerName
 
-if __name__ == "__main__":
-    # logic for user input -> rewrite for the front-end
+
+def console_game():
     u = UserPlayer()
     computer = LoudBotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
     while not u.gameOver():
@@ -598,3 +614,24 @@ if __name__ == "__main__":
         print("="*15)
         print('Computer turn')
         print("="*15)
+
+def game_func_roll(UserPlayer, dice: list, end_turn: bool):
+    u = UserPlayer.copy()
+    die_rolled, not_crap_out = u.roll()
+    return (u, die_rolled, not_crap_out)
+    
+def game_func_input(UserPlayer, Computer, die_to_score: list, not_crap_out: bool, endturn: bool):
+    u = UserPlayer.copy()
+    c = Computer.copy()
+    if not_crap_out:
+        u.process_roll(die_to_score, endturn)
+    else:
+        print("crap out 0 points")
+    print("="*15)
+    print('Computer turn')
+    print(next(c))
+    print("="*15)
+    return (u, c)
+
+# if __name__ == "__main__":
+#     print(simulate_2stratBvsABplayers(50, 1, 4, 350))

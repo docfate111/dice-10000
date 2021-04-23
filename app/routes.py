@@ -99,13 +99,38 @@ def text3():
         label1="Number of dice for player 1 to stop at each turn",
         label2="Number of dice for player 2 to stop at each turn",
     )
+
+
 # strategy AB vs A
-# BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
-
-
+# simulate_2stratBvsABplayers(50, 1, 4, 350)
+# 2 strategy B players face off
+@app.route("/stratABvA", methods=["GET", "POST"])
+def textP():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        p1dice = request.form["player1_dicestop"]
+        p2dice = request.form["player2_dicestop"]
+        p2score = request.form["player2_score"]
+        res = dicethousand.simulate_2stratBvsABplayers(
+            num_games, p1dice, p2dice, p2score
+        )
+        return render_template(
+            "textResults.html",
+            new_text=str(res),
+            num_games=num_games,
+        )
+    return render_template(
+        "form4inputs.html",
+        title="Home",
+        form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
+        label1="Number of dice for player 1 to stop at each turn",
+        label2="Number of dice for player 2 to stop at each turn",
+        label3="Player 2 score to stop at each turn"
+    )
 
 # strategy AB vs AB
 # BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
+
 
 @app.route("/bestA", methods=["GET", "POST"])
 def text4():
@@ -161,7 +186,6 @@ def text6():
 
 
 cache = {}
-
 
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
