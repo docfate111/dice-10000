@@ -3,7 +3,9 @@ import os
 import math
 from collections import Counter
 import copy
+
 cpy = lambda x: copy.deepcopy(x)
+
 
 def roll_n_die(n: int) -> list:
     """
@@ -144,11 +146,19 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
     win_counts["b"] /= count_
     return win_counts
 
-def simulate_2stratBvsABplayers(num_games: str, dicetostopat1: str, dicetostopat2: str, score_to_stop_at_turn: str):
+
+def simulate_2stratBvsABplayers(
+    num_games: str, dicetostopat1: str, dicetostopat2: str, score_to_stop_at_turn: str
+):
     num_games = int(num_games)
     count_ = 0
     player_A = BotPlayer(name="0", stop_at_n_dice=int(dicetostopat1), strategy="B")
-    player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), score_to_stop_at_each_turn=int(score_to_stop_at_turn), strategy="AB")
+    player_B = BotPlayer(
+        name="1",
+        stop_at_n_dice=int(dicetostopat2),
+        score_to_stop_at_each_turn=int(score_to_stop_at_turn),
+        strategy="AB",
+    )
     win_counts = {"a": 0, "b": 0}
     while count_ < num_games:
         g = BotGame(playersToAdd=[player_A, player_B])
@@ -161,6 +171,7 @@ def simulate_2stratBvsABplayers(num_games: str, dicetostopat1: str, dicetostopat
     win_counts["a"] /= count_
     win_counts["b"] /= count_
     return win_counts
+
 
 class BotGame:
     def __init__(
@@ -293,8 +304,12 @@ class BotPlayer:
             self.game_over = True
         if self.strategy == "AB":
             if self.verbose:
-                print(f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached")
-            while num_of_dice > self.minNum_of_dice and score < self.score_to_stop_at_turn:
+                print(
+                    f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached"
+                )
+            while (
+                num_of_dice > self.minNum_of_dice and score < self.score_to_stop_at_turn
+            ):
                 if self.verbose:
                     print(f"{self.playerName} rolled {num_of_dice} dice")
                 if self.verbose:
@@ -389,7 +404,7 @@ class BotPlayer:
 
     def getScore(self):
         return self.score
-    
+
     def getName(self):
         return self.playerName
 
@@ -437,18 +452,19 @@ class UserPlayer:
         else:
             print(f"Round score: {self.round_score}\nTotal score: {self.total_score}")
             print(f"{self.num_of_dice} left to roll")
-        
+
     def getNumDice(self):
         return self.num_of_dice
 
     def gameOver(self):
         return self.game_over
-    
+
     def getRoundScore(self):
         return self.round_score
-    
+
     def getTotalScore(self):
         return self.total_score
+
 
 class LoudBotPlayer:
     def __init__(
@@ -502,10 +518,14 @@ class LoudBotPlayer:
             if self.verbose:
                 print(f"{self.score} >= {self.game_end_score}")
             self.game_over = True
-        if self.strategy == 'AB':
+        if self.strategy == "AB":
             if self.verbose:
-                print(f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached")
-            while num_of_dice >= self.minNum_of_dice or (num_of_dice > 0 and score < self.score_to_stop_at_turn):
+                print(
+                    f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached"
+                )
+            while num_of_dice >= self.minNum_of_dice or (
+                num_of_dice > 0 and score < self.score_to_stop_at_turn
+            ):
                 if self.verbose:
                     print(f"{self.playerName} rolled {num_of_dice} dice")
                 if self.verbose:
@@ -609,7 +629,9 @@ class LoudBotPlayer:
 
 def console_game():
     u = UserPlayer()
-    computer = LoudBotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
+    computer = LoudBotPlayer(
+        name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB"
+    )
     while not u.gameOver():
         die_rolled, not_crap_out = u.roll()
         print(f"You rolled: {die_rolled}")
@@ -621,24 +643,28 @@ def console_game():
             u.process_roll(die_to_score, endturn)
         else:
             print("crap out 0 points")
-        print("="*15)
-        print('Computer turn')
-        print("="*15)
+        print("=" * 15)
+        print("Computer turn")
+        print("=" * 15)
+
 
 def game_func_roll(UserPlayer):
     u = cpy(UserPlayer)
     die_rolled, not_crap_out = u.roll()
     return (u, die_rolled, not_crap_out)
-    
-def game_func_input(UserPlayer, Computer, die_to_score: list, not_crap_out: bool, endturn: bool):
+
+
+def game_func_input(
+    UserPlayer, Computer, die_to_score: list, not_crap_out: bool, endturn: bool
+):
     u = cpy(UserPlayer)
     c = cpy(Computer)
     if not_crap_out:
         u.process_roll(die_to_score, endturn)
     else:
         print("crap out 0 points")
-    print("="*15)
-    print('Computer turn')
+    print("=" * 15)
+    print("Computer turn")
     print(next(c))
-    print("="*15)
+    print("=" * 15)
     return (u, c)

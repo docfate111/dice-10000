@@ -1,4 +1,5 @@
 import copy
+
 cpy = lambda x: copy.deepcopy(x)
 try:
     from flask import (
@@ -127,8 +128,9 @@ def textP():
         form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
         label1="Number of dice for player 1 to stop at each turn",
         label2="Number of dice for player 2 to stop at each turn",
-        label3="Player 2 score to stop at each turn"
+        label3="Player 2 score to stop at each turn",
     )
+
 
 # strategy AB vs AB
 # BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
@@ -189,6 +191,7 @@ def text6():
 
 cache = {}
 
+
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
     global cache
@@ -198,10 +201,12 @@ def text7():
         u, die_rolled, not_crap_out = dicethousand.game_func_roll(cache["player"])
         cache["not_crap_out"] = not_crap_out
         cache["current_round"] += 1
-        not_endturn = True 
+        not_endturn = True
         if request.form.getlist("end"):
             not_endturn = False
-        u, c = dicethousand.game_func_input(cpy(u), cpy(cache["computer"]), resp, not_crap_out, not_endturn)
+        u, c = dicethousand.game_func_input(
+            cpy(u), cpy(cache["computer"]), resp, not_crap_out, not_endturn
+        )
         cache["player"] = cpy(u)
         cache["computer"] = cpy(c)
         return render_template(
@@ -214,22 +219,26 @@ def text7():
             round=cache["current_round"],
             message="message goes here",
         )
-    cache["computer"] = cpy(dicethousand.LoudBotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB"))
+    cache["computer"] = cpy(
+        dicethousand.LoudBotPlayer(
+            name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB"
+        )
+    )
     cache["player"] = cpy(dicethousand.UserPlayer())
     u, die_rolled, not_crap_out = dicethousand.game_func_roll(cache["player"])
     cache["not_crap_out"] = not_crap_out
     cache["current_round"] = 1
     cache["player"] = cpy(u)
     return render_template(
-            "demoResults.html",
-            num_dice=6,
-            die_rolled=die_rolled,
-            die=[1, 2, 3, 4, 5, 6],
-            total_score=u.getTotalScore(),
-            pts=u.getRoundScore(),
-            round=cache["current_round"],
-            message="Beginning a new game",
-        )
+        "demoResults.html",
+        num_dice=6,
+        die_rolled=die_rolled,
+        die=[1, 2, 3, 4, 5, 6],
+        total_score=u.getTotalScore(),
+        pts=u.getRoundScore(),
+        round=cache["current_round"],
+        message="Beginning a new game",
+    )
 
 
 # @app.route("/demoResults")
