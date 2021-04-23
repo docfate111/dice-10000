@@ -345,27 +345,39 @@ class UserPlayer:
         self.rolled_die = []
         self.game_over = False
 
+    def setup_for_next_turn(self):
+        self.round_score = 0
+        self.num_of_dice = 6
+        print('='*15)
+        print('NEW TURN')
+        print('='*15)
+        
     def roll(self):
-        print(f'rolling {self.num_of_dice}')
+        print(f'rolling {self.num_of_dice} dice')
         die_rolled = roll_n_die(self.num_of_dice)
-        self.rolled_die = die_rolled
-        return die_rolled
+        self.rolled_die = die_rolled.copy()
+        roll_score, _ = score_die(die_rolled)
+        if roll_score == 0 or self.rolled_die == []:
+            print('Crap out\n0 points for the turn')
+            self.setup_for_next_turn()
+            return (self.rolled_die, False)
+        return (self.rolled_die, True)
         
     def process_roll(self, die_to_take, end_turn):
+        removed = die_to_take.copy()
         pts, rem = score_die(die_to_take)
         self.round_score += pts
-        self.num_of_dice -= len(dice_to_take)
+        self.num_of_dice -= len(removed)
         self.num_of_dice += rem
         if not end_turn:
-            print(f'{self.num_of_dice} left to roll')
-        else:
-            self.num_of_dice = 6
+            print('Turn ended')
             self.total_score += self.round_score
-            self.round_score = 0
+            print(f'Round score: {self.round_score}\nTotal score: {self.total_score}')
+            self.setup_for_next_turn()
+        else:
+            print(f'Round score: {self.round_score}\nTotal score: {self.total_score}')
+            print(f'{self.num_of_dice} left to roll')  
         
-
-    def getScore(self):
-        return self.score
     
     def gameOver(self):
         return self.game_over
@@ -374,13 +386,17 @@ if __name__ == "__main__":
     # logic for user input -> rewrite for the front-end
     u = UserPlayer()
     while not u.gameOver():
-        die_rolled = u.roll()
+        die_rolled, not_crap_out = u.roll()
         print(f'You rolled: {die_rolled}')
-        print('List of dice to take(i.e. 1,2,3): ')
-        die_to_score = str(input()).split(',')
-        print('Do you want to end your turn(y/n)?')
-        endturn = 'y' in str(input())
-        u.process_roll(die_to_score, endturn)
+        if not_crap_out:
+            print('List of dice to take(i.e. 1,2,3): ')
+            die_to_score = list(map(lambda x: int(x), str(input()).split(',')))
+            print('Do you want to end your turn(y/n)?')
+            endturn = 'y' not in str(input())
+            u.process_roll(die_to_score, endturn)
+        else:
+            print('crap out 0 points')
+
         
         
     
