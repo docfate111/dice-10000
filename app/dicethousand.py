@@ -583,20 +583,18 @@ class LoudBotPlayer:
 if __name__ == "__main__":
     # logic for user input -> rewrite for the front-end
     u = UserPlayer()
-    computer = BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
-    # while not u.gameOver():
-        # die_rolled, not_crap_out = u.roll()
-        # print(f"You rolled: {die_rolled}")
-        # if not_crap_out:
-        #     print("List of dice to take(i.e. 1,2,3): ")
-        #     die_to_score = list(map(lambda x: int(x), str(input()).split(",")))
-        #     print("Do you want to end your turn(y/n)?")
-        #     endturn = "y" not in str(input())
-        #     u.process_roll(die_to_score, endturn)
-        # else:
-        #     print("crap out 0 points")
-        # print("="*15)
-        # print('Computer turn')
-        # print("="*15)
-    for i in range(3):
-        print(next(computer))
+    computer = LoudBotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
+    while not u.gameOver():
+        die_rolled, not_crap_out = u.roll()
+        print(f"You rolled: {die_rolled}")
+        if not_crap_out:
+            print("List of dice to take(i.e. 1,2,3): ")
+            die_to_score = list(map(lambda x: int(x), str(input()).split(",")))
+            print("Do you want to end your turn(y/n)?")
+            endturn = "y" not in str(input())
+            u.process_roll(die_to_score, endturn)
+        else:
+            print("crap out 0 points")
+        print("="*15)
+        print('Computer turn')
+        print("="*15)
