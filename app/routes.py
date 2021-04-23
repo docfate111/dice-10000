@@ -1,3 +1,5 @@
+import copy
+cpy = lambda x: copy.deepcopy(x)
 try:
     from flask import (
         render_template,
@@ -190,26 +192,41 @@ cache = {}
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
     global cache
-    if request.method == "POST":
+    if request.method == "POST" and "player" in cache.keys():
         resp = request.form.getlist("hello")
         resp = list(map(lambda x: int(x), resp))
+        u, die_rolled, not_crap_out = dicethousand.game_func_roll(cache["player"])
+        cache["not_crap_out"] = not_crap_out
+        cache["current_round"] += 1
+        not_endturn = True 
+        if request.form.getlist("end"):
+            not_endturn = False
+        u, c = dicethousand.game_func_input(cpy(u), cpy(cache["computer"]), resp, not_crap_out, not_endturn)
+        cache["player"] = cpy(u)
+        cache["computer"] = cpy(c)
         return render_template(
             "demoResults.html",
-            num_dice=cache["remaining"],
-            res=rolled_die,
-            die=die,
-            total_score=cache["user_score_total"],
-            pts=cache["user_score_round"],
+            num_dice=cache["player"].getNumDice(),
+            die_rolled=die_rolled,
+            die=[1, 2, 3, 4, 5, 6],
+            total_score=u.getTotalScore(),
+            pts=u.getRoundScore(),
             round=cache["current_round"],
-            message=msg,
+            message="message goes here",
         )
-        return render_template(
+    cache["computer"] = cpy(dicethousand.LoudBotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB"))
+    cache["player"] = cpy(dicethousand.UserPlayer())
+    u, die_rolled, not_crap_out = dicethousand.game_func_roll(cache["player"])
+    cache["not_crap_out"] = not_crap_out
+    cache["current_round"] = 1
+    cache["player"] = cpy(u)
+    return render_template(
             "demoResults.html",
             num_dice=6,
-            res=dicethousand.roll_n_die(6),
+            die_rolled=die_rolled,
             die=[1, 2, 3, 4, 5, 6],
-            total_score=0,
-            pts=0,
+            total_score=u.getTotalScore(),
+            pts=u.getRoundScore(),
             round=cache["current_round"],
             message="Beginning a new game",
         )

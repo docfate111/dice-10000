@@ -2,7 +2,8 @@ import random
 import os
 import math
 from collections import Counter
-
+import copy
+cpy = lambda x: copy.deepcopy(x)
 
 def roll_n_die(n: int) -> list:
     """
@@ -388,7 +389,7 @@ class BotPlayer:
 
     def getScore(self):
         return self.score
-
+    
     def getName(self):
         return self.playerName
 
@@ -436,9 +437,18 @@ class UserPlayer:
         else:
             print(f"Round score: {self.round_score}\nTotal score: {self.total_score}")
             print(f"{self.num_of_dice} left to roll")
+        
+    def getNumDice(self):
+        return self.num_of_dice
 
     def gameOver(self):
         return self.game_over
+    
+    def getRoundScore(self):
+        return self.round_score
+    
+    def getTotalScore(self):
+        return self.total_score
 
 class LoudBotPlayer:
     def __init__(
@@ -453,7 +463,7 @@ class LoudBotPlayer:
         """
         add more strategies for computer to use
         """
-        self.verbose = True
+        self.verbose = False
         self.score = 0
         self.turns = 0
         self.num_of_dice = num_dice
@@ -615,14 +625,14 @@ def console_game():
         print('Computer turn')
         print("="*15)
 
-def game_func_roll(UserPlayer, dice: list, end_turn: bool):
-    u = UserPlayer.copy()
+def game_func_roll(UserPlayer):
+    u = cpy(UserPlayer)
     die_rolled, not_crap_out = u.roll()
     return (u, die_rolled, not_crap_out)
     
 def game_func_input(UserPlayer, Computer, die_to_score: list, not_crap_out: bool, endturn: bool):
-    u = UserPlayer.copy()
-    c = Computer.copy()
+    u = cpy(UserPlayer)
+    c = cpy(Computer)
     if not_crap_out:
         u.process_roll(die_to_score, endturn)
     else:
@@ -632,6 +642,3 @@ def game_func_input(UserPlayer, Computer, die_to_score: list, not_crap_out: bool
     print(next(c))
     print("="*15)
     return (u, c)
-
-# if __name__ == "__main__":
-#     print(simulate_2stratBvsABplayers(50, 1, 4, 350))
