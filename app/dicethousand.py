@@ -3,6 +3,7 @@ import os
 import math
 from collections import Counter
 
+
 def roll_n_die(n: int) -> list:
     """
     simulate rolling the dice 3 times
@@ -12,6 +13,7 @@ def roll_n_die(n: int) -> list:
         dice.append(random.randint(1, 6))
     dice.sort()
     return dice
+
 
 def score_die(dice: list) -> tuple:
     """
@@ -46,6 +48,7 @@ def score_die(dice: list) -> tuple:
             rest.append(dice.pop())
     return (pts, len(rest) + len(dice))
 
+
 def findbeststratA(num_of_games: str, other_player_stops_at=500):
     stopscores_to_winratio = {}
     for stopscore in range(50, 900, 50):
@@ -56,6 +59,7 @@ def findbeststratA(num_of_games: str, other_player_stops_at=500):
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
 
+
 def findbeststratB(num_of_games: str, stopdice1=2):
     # find the best strategy for B
     stopscores_to_winratio = {}
@@ -64,6 +68,7 @@ def findbeststratB(num_of_games: str, stopdice1=2):
         stopscores_to_winratio[stopdice] = res["b"]
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
+
 
 def simulate(num_games: int) -> dict:
     count_ = 0
@@ -79,6 +84,7 @@ def simulate(num_games: int) -> dict:
     for player in g.getPlayers():
         win_counts[str(int(player.getName()) + 1)] /= count_
     return win_counts
+
 
 def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     num_games = int(num_games)
@@ -99,6 +105,7 @@ def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     win_counts["b"] /= count_
     return win_counts
 
+
 def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> dict:
     num_games = int(num_games)
     count_ = 0
@@ -117,6 +124,7 @@ def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> d
     win_counts["b"] /= count_
     return win_counts
 
+
 def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: str):
     num_games = int(num_games)
     count_ = 0
@@ -134,6 +142,7 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
     win_counts["a"] /= count_
     win_counts["b"] /= count_
     return win_counts
+
 
 class BotGame:
     def __init__(
@@ -212,6 +221,7 @@ class BotGame:
         for i in range(self.num_of_players):
             print(f"Player {i+1} has {self.players[i].getScore()} points")
 
+
 class BotPlayer:
     def __init__(
         self,
@@ -263,10 +273,10 @@ class BotPlayer:
             if self.verbose:
                 print(f"{self.score} >= {self.game_end_score}")
             self.game_over = True
-        if self.strategy == "A":
+        if self.strategy == "AB":
             if self.verbose:
-                print(f"Strategy A: roll until {self.score_to_stop_at_turn} is reached")
-            while num_of_dice > 0 and score < self.score_to_stop_at_turn:
+                print(f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached")
+            while num_of_dice > self.minNum_of_dice and score < self.score_to_stop_at_turn:
                 if self.verbose:
                     print(f"{self.playerName} rolled {num_of_dice} dice")
                 if self.verbose:
@@ -283,6 +293,36 @@ class BotPlayer:
                     if self.verbose:
                         print("All dice were used so rolling over")
                     num_of_dice = self.num_of_dice
+                    score += pts
+                else:
+                    score += pts
+                    num_of_dice = remaining
+            self.score += score
+            if self.verbose:
+                print(f"{score} is above {self.score_to_stop_at_turn}")
+            return score
+        if self.strategy == "A":
+            if self.verbose:
+                print(f"Strategy A: roll until {self.score_to_stop_at_turn} is reached")
+            while num_of_dice > 0 and score < self.score_to_stop_at_turn:
+                if self.verbose:
+                    print(f"{self.playerName} rolled {num_of_dice} dice")
+                if self.verbose:
+                    print(f"{self.playerName}'s score is {score}")
+                dice_rolled = roll_n_die(num_of_dice)
+                rolls.append(dice_rolled.copy())
+                if self.verbose:
+                    print(f"{self.playerName} rolled {dice_rolled}")
+                pts, remaining = score_die(dice_rolled)
+                if pts == 0:
+                    if self.verbose:
+                        print(f"{self.playerName}'s turn ended with 0 points")
+                    return 0
+                elif remaining == 0 and pts != 0:
+                    if self.verbose:
+                        print("All dice were used so rolling over")
+                    num_of_dice = self.num_of_dice
+                    score += pts
                 else:
                     score += pts
                     num_of_dice = remaining
@@ -299,6 +339,7 @@ class BotPlayer:
                 if self.verbose:
                     print(f"{self.playerName}'s score is {score}")
                 dice_rolled = roll_n_die(num_of_dice)
+                rolls.append(dice_rolled.copy())
                 if self.verbose:
                     print(f"{self.playerName} rolled {dice_rolled}")
                 pts, remaining = score_die(dice_rolled)
@@ -310,6 +351,7 @@ class BotPlayer:
                     if self.verbose:
                         print("All dice were used so rolling over")
                     num_of_dice = self.num_of_dice
+                    score += pts
                 else:
                     score += pts
                     num_of_dice = remaining
@@ -334,6 +376,7 @@ class BotPlayer:
     def getName(self):
         return self.playerName
 
+
 class UserPlayer:
     def __init__(self, s=500, ws=10000, name="p1"):
         self.total_score = 0
@@ -348,21 +391,21 @@ class UserPlayer:
     def setup_for_next_turn(self):
         self.round_score = 0
         self.num_of_dice = 6
-        print('='*15)
-        print('NEW TURN')
-        print('='*15)
-        
+        print("=" * 15)
+        print("NEW TURN")
+        print("=" * 15)
+
     def roll(self):
-        print(f'rolling {self.num_of_dice} dice')
+        print(f"rolling {self.num_of_dice} dice")
         die_rolled = roll_n_die(self.num_of_dice)
         self.rolled_die = die_rolled.copy()
         roll_score, _ = score_die(die_rolled)
         if roll_score == 0 or self.rolled_die == []:
-            print('Crap out\n0 points for the turn')
+            print("Crap out\n0 points for the turn")
             self.setup_for_next_turn()
             return (self.rolled_die, False)
         return (self.rolled_die, True)
-        
+
     def process_roll(self, die_to_take, end_turn):
         removed = die_to_take.copy()
         pts, rem = score_die(die_to_take)
@@ -370,33 +413,190 @@ class UserPlayer:
         self.num_of_dice -= len(removed)
         self.num_of_dice += rem
         if not end_turn:
-            print('Turn ended')
+            print("Turn ended")
             self.total_score += self.round_score
-            print(f'Round score: {self.round_score}\nTotal score: {self.total_score}')
+            print(f"Round score: {self.round_score}\nTotal score: {self.total_score}")
             self.setup_for_next_turn()
         else:
-            print(f'Round score: {self.round_score}\nTotal score: {self.total_score}')
-            print(f'{self.num_of_dice} left to roll')  
-        
-    
+            print(f"Round score: {self.round_score}\nTotal score: {self.total_score}")
+            print(f"{self.num_of_dice} left to roll")
+
     def gameOver(self):
         return self.game_over
-    
+
+class LoudBotPlayer:
+    def __init__(
+        self,
+        score_to_stop_at_each_turn=500,
+        ending_score=10000,
+        name="p1",
+        num_dice=6,
+        stop_at_n_dice=None,
+        strategy=None,
+    ):
+        """
+        add more strategies for computer to use
+        """
+        self.verbose = True
+        self.score = 0
+        self.turns = 0
+        self.num_of_dice = num_dice
+        self.playerName = name
+        self.score_to_stop_at_turn = score_to_stop_at_each_turn
+        self.game_end_score = ending_score
+        self.game_over = False
+        self.minNum_of_dice = stop_at_n_dice
+        if strategy == None:
+            if self.minNum_of_dice != None:
+                self.strategy = "B"
+            else:
+                self.strategy = "A"
+        else:
+            self.strategy = strategy
+
+    def reset(self):
+        self.score = 0
+        self.turns = 0
+        self.game_over = False
+
+    def __next__(self):
+        """
+        strategy: continues rolling until a number is reached
+        takes all dice possible
+        i.e. takes 3 5s rather than 1 5
+        """
+        rolls = []
+        score = 0
+        num_of_dice = self.num_of_dice
+        if self.game_over:
+            if self.verbose:
+                print("Game over")
+            return (score, rolls)
+        if self.score >= self.game_end_score and not self.game_over:
+            if self.verbose:
+                print(f"{self.score} >= {self.game_end_score}")
+            self.game_over = True
+        if self.strategy == 'AB':
+            if self.verbose:
+                print(f"Strategy AB: roll if more dice than {self.minNum_of_dice} otherwise until {self.score_to_stop_at_turn} is reached")
+            while num_of_dice >= self.minNum_of_dice or (num_of_dice > 0 and score < self.score_to_stop_at_turn):
+                if self.verbose:
+                    print(f"{self.playerName} rolled {num_of_dice} dice")
+                if self.verbose:
+                    print(f"{self.playerName}'s score is {score}")
+                dice_rolled = roll_n_die(num_of_dice)
+                rolls.append(dice_rolled.copy())
+                if self.verbose:
+                    print(f"{self.playerName} rolled {dice_rolled}")
+                pts, remaining = score_die(dice_rolled)
+                if pts == 0:
+                    if self.verbose:
+                        print(f"{self.playerName}'s turn ended with 0 points")
+                    return 0
+                elif remaining == 0 and pts != 0:
+                    if self.verbose:
+                        print("All dice were used so rolling over")
+                    num_of_dice = self.num_of_dice
+                    score += pts
+                else:
+                    score += pts
+                    num_of_dice = remaining
+            self.score += score
+            if self.verbose:
+                print(f"{score} is above {self.score_to_stop_at_turn}")
+            return (score, rolls)
+        if self.strategy == "A":
+            if self.verbose:
+                print(f"Strategy A: roll until {self.score_to_stop_at_turn} is reached")
+            while num_of_dice > 0 and score < self.score_to_stop_at_turn:
+                if self.verbose:
+                    print(f"{self.playerName} rolled {num_of_dice} dice")
+                if self.verbose:
+                    print(f"{self.playerName}'s score is {score}")
+                dice_rolled = roll_n_die(num_of_dice)
+                rolls.append(dice_rolled.copy())
+                if self.verbose:
+                    print(f"{self.playerName} rolled {dice_rolled}")
+                pts, remaining = score_die(dice_rolled)
+                if pts == 0:
+                    if self.verbose:
+                        print(f"{self.playerName}'s turn ended with 0 points")
+                    return 0
+                elif remaining == 0 and pts != 0:
+                    if self.verbose:
+                        print("All dice were used so rolling over")
+                    num_of_dice = self.num_of_dice
+                    score += pts
+                else:
+                    score += pts
+                    num_of_dice = remaining
+            self.score += score
+            if self.verbose:
+                print(f"{score} is above {self.score_to_stop_at_turn}")
+            return (score, rolls)
+        elif self.strategy == "B":
+            if self.verbose:
+                print(f"Strategy B: roll until only {self.minNum_of_dice} dice left")
+            while num_of_dice > self.minNum_of_dice and num_of_dice > 0:
+                if self.verbose:
+                    print(f"{self.playerName} rolled {num_of_dice} dice")
+                if self.verbose:
+                    print(f"{self.playerName}'s score is {score}")
+                dice_rolled = roll_n_die(num_of_dice)
+                rolls.append(dice_rolled.copy())
+                if self.verbose:
+                    print(f"{self.playerName} rolled {dice_rolled}")
+                pts, remaining = score_die(dice_rolled)
+                if pts == 0:
+                    if self.verbose:
+                        print(f"{self.playerName}'s turn ended with 0 points")
+                    return (0, rolls)
+                elif remaining == 0 and pts != 0:
+                    if self.verbose:
+                        print("All dice were used so rolling over")
+                    num_of_dice = self.num_of_dice
+                    score += pts
+                else:
+                    score += pts
+                    num_of_dice = remaining
+            self.score += score
+            if self.verbose:
+                print(f"Ending score {score}")
+            if self.verbose:
+                print(
+                    f"{num_of_dice} less than or equal to the minimum number {self.minNum_of_dice}"
+                )
+            return (score, rolls)
+        elif self.strategy == "C":
+            if self.verbose:
+                print(
+                    f"Strategy C: ignore triple 5, roll until {self.score_to_stop_at_turn} is reached"
+                )
+            return (score, rolls)
+
+    def getScore(self):
+        return self.score
+
+    def getName(self):
+        return self.playerName
+
 if __name__ == "__main__":
     # logic for user input -> rewrite for the front-end
     u = UserPlayer()
-    while not u.gameOver():
-        die_rolled, not_crap_out = u.roll()
-        print(f'You rolled: {die_rolled}')
-        if not_crap_out:
-            print('List of dice to take(i.e. 1,2,3): ')
-            die_to_score = list(map(lambda x: int(x), str(input()).split(',')))
-            print('Do you want to end your turn(y/n)?')
-            endturn = 'y' not in str(input())
-            u.process_roll(die_to_score, endturn)
-        else:
-            print('crap out 0 points')
-
-        
-        
-    
+    computer = BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
+    # while not u.gameOver():
+        # die_rolled, not_crap_out = u.roll()
+        # print(f"You rolled: {die_rolled}")
+        # if not_crap_out:
+        #     print("List of dice to take(i.e. 1,2,3): ")
+        #     die_to_score = list(map(lambda x: int(x), str(input()).split(",")))
+        #     print("Do you want to end your turn(y/n)?")
+        #     endturn = "y" not in str(input())
+        #     u.process_roll(die_to_score, endturn)
+        # else:
+        #     print("crap out 0 points")
+        # print("="*15)
+        # print('Computer turn')
+        # print("="*15)
+    for i in range(3):
+        print(next(computer))

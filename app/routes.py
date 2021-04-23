@@ -99,7 +99,13 @@ def text3():
         label1="Number of dice for player 1 to stop at each turn",
         label2="Number of dice for player 2 to stop at each turn",
     )
+# strategy AB vs A
+# BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
 
+
+
+# strategy AB vs AB
+# BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
 
 @app.route("/bestA", methods=["GET", "POST"])
 def text4():
@@ -145,41 +151,44 @@ def text5():
         form_title="Simulate several games to find the best number of dice to stop at for each turn (based on your opponent)",
         label1="(Optional) Number of dice for player 1",
     )
+
+
 @app.route("/rules", methods=["GET"])
 def text6():
     return render_template(
         "rules.html",
     )
- 
+
+
 cache = {}
- 
+
+
 @app.route("/demo", methods=["GET", "POST"])
 def text7():
     global cache
     if request.method == "POST":
-        resp = request.form.getlist('hello')
+        resp = request.form.getlist("hello")
         resp = list(map(lambda x: int(x), resp))
         return render_template(
-                "demoResults.html",
-                num_dice=cache['remaining'],
-                res=rolled_die,
-                die=die,
-                total_score=cache['user_score_total'],
-                pts=cache['user_score_round'],
-                round=cache['current_round'],
-                message=msg,
-                )
+            "demoResults.html",
+            num_dice=cache["remaining"],
+            res=rolled_die,
+            die=die,
+            total_score=cache["user_score_total"],
+            pts=cache["user_score_round"],
+            round=cache["current_round"],
+            message=msg,
+        )
         return render_template(
-        "demoResults.html",
-        num_dice=6,
-        res = dicethousand.roll_n_die(6),
-        die=[1, 2, 3, 4, 5, 6],
-        total_score=0,
-        pts=0,
-        round=cache['current_round'],
-        message='Beginning a new game'
-    )
-    
+            "demoResults.html",
+            num_dice=6,
+            res=dicethousand.roll_n_die(6),
+            die=[1, 2, 3, 4, 5, 6],
+            total_score=0,
+            pts=0,
+            round=cache["current_round"],
+            message="Beginning a new game",
+        )
+
+
 # @app.route("/demoResults")
-
-
