@@ -94,19 +94,16 @@ def simulate_2stratAplayers(num_games: str, up_to1: str, up_to2: str) -> dict:
     up_to1 = int(up_to1)
     up_to2 = int(up_to2)
     count_ = 0
-    win_counts = {"a": 0, "b": 0}
+    a_wins = 0
+    win_count_a = []
     while count_ < num_games:
         g = BotGame(score_to_stop_at_each_turn=[up_to1, up_to2])
         for winner in g.playGame():
-            # print(winner.getName())
             if int(winner.getName()) == 0:
-                win_counts["a"] += 1
-            else:
-                win_counts["b"] += 1
-        count_ += 1
-    win_counts["a"] /= count_
-    win_counts["b"] /= count_
-    return win_counts
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
+    return win_count_a
 
 
 def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> dict:
@@ -114,18 +111,16 @@ def simulate_stratABplayers(num_games: str, upto1: str, dicetostopat2: str) -> d
     count_ = 0
     player_A = BotPlayer(name="0", score_to_stop_at_each_turn=int(upto1), strategy="A")
     player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), strategy="B")
-    win_counts = {"a": 0, "b": 0}
+    a_wins = 0
+    win_count_a = []
     while count_ < num_games:
         g = BotGame(playersToAdd=[player_A, player_B])
         for winner in g.playGame():
             if int(winner.getName()) == 0:
-                win_counts["a"] += 1
-            else:
-                win_counts["b"] += 1
-        count_ += 1
-    win_counts["a"] /= count_
-    win_counts["b"] /= count_
-    return win_counts
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
+    return win_count_a
 
 
 def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: str):
@@ -133,17 +128,16 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
     count_ = 0
     player_A = BotPlayer(name="0", stop_at_n_dice=int(dicetostopat1), strategy="B")
     player_B = BotPlayer(name="1", stop_at_n_dice=int(dicetostopat2), strategy="B")
-    win_counts = {"a": 0, "b": 0}
+    a_wins = 0
+    count_ = 0
+    win_count_a = []
     while count_ < num_games:
         g = BotGame(playersToAdd=[player_A, player_B])
         for winner in g.playGame():
             if int(winner.getName()) == 0:
-                win_counts["a"] += 1
-            else:
-                win_counts["b"] += 1
-        count_ += 1
-    win_counts["a"] /= count_
-    win_counts["b"] /= count_
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
     return win_counts
 
 
@@ -151,7 +145,6 @@ def simulate_2stratBvsABplayers(
     num_games: str, dicetostopat1: str, dicetostopat2: str, score_to_stop_at_turn: str
 ):
     num_games = int(num_games)
-    count_ = 0
     player_A = BotPlayer(name="0", stop_at_n_dice=int(dicetostopat1), strategy="B")
     player_B = BotPlayer(
         name="1",
@@ -159,18 +152,76 @@ def simulate_2stratBvsABplayers(
         score_to_stop_at_each_turn=int(score_to_stop_at_turn),
         strategy="AB",
     )
-    win_counts = {"a": 0, "b": 0}
+    a_wins = 0
+    count_ = 0
+    win_count_a = []
     while count_ < num_games:
         g = BotGame(playersToAdd=[player_A, player_B])
         for winner in g.playGame():
             if int(winner.getName()) == 0:
-                win_counts["a"] += 1
-            else:
-                win_counts["b"] += 1
-        count_ += 1
-    win_counts["a"] /= count_
-    win_counts["b"] /= count_
-    return win_counts
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
+    return win_count_a
+
+
+def simulate_2stratAvsABplayers(
+    num_games: str, scoretostopat1: str, dicetostopat2: str, score_to_stop_at_turn: str
+):
+    num_games = int(num_games)
+    player_A = BotPlayer(
+        name="0", score_to_stop_at_each_turn=int(scoretostopat1), strategy="A"
+    )
+    player_B = BotPlayer(
+        name="1",
+        stop_at_n_dice=int(dicetostopat2),
+        score_to_stop_at_each_turn=int(score_to_stop_at_turn),
+        strategy="AB",
+    )
+    a_wins = 0
+    count_ = 0
+    win_count_a = []
+    while count_ < num_games:
+        g = BotGame(playersToAdd=[player_A, player_B])
+        for winner in g.playGame():
+            if int(winner.getName()) == 0:
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
+    return win_count_a
+
+
+def simulate_2stratABvsABplayers(
+    num_games: str,
+    dicetostopat1: str,
+    score_to_stop_at_turn1: str,
+    dicetostopat2: str,
+    score_to_stop_at_turn2: str,
+):
+    num_games = int(num_games)
+    player_A = BotPlayer(
+        name="0",
+        stop_at_n_dice=int(dicetostopat1),
+        score_to_stop_at_each_turn=int(score_to_stop_at_turn1),
+        strategy="AB"
+    )
+    player_B = BotPlayer(
+        name="1",
+        stop_at_n_dice=int(dicetostopat2),
+        score_to_stop_at_each_turn=int(score_to_stop_at_turn2),
+        strategy="AB",
+    )
+    a_wins = 0
+    count_ = 0
+    win_count_a = []
+    while count_ < num_games:
+        g = BotGame(playersToAdd=[player_A, player_B])
+        for winner in g.playGame():
+            if int(winner.getName()) == 0:
+                a_wins += 1
+            count_ += 1
+            win_count_a.append((a_wins * 100) / count_)
+    return win_count_a
 
 
 class BotGame:
@@ -294,6 +345,7 @@ class BotPlayer:
         """
         score = 0
         num_of_dice = self.num_of_dice
+        rolls = []
         if self.game_over:
             if self.verbose:
                 print("Game over")

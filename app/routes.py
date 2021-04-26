@@ -37,18 +37,21 @@ def text():
             num_games, player1_stoppingscore, player2_stoppingscore
         )
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
+            "graph.html",
+            labels=[i for i in range(1, len(res)+1)],
+            values=res,
+            values2=[100-i for i in res],
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
+            player1_label="Player A rolled until they scored: ",
+            player2_label="Player B rolled until they scored: "
         )
     return render_template(
         "form3inputs.html",
         title="Home",
         form_title="Simulate 2 players who roll until they reach a certain score each turn",
-        label1="Score for player 1 to stop at each turn",
-        label2="Score for player 2 to stop at each turn",
+        label1="Score for player A to stop at each turn",
+        label2="Score for player B to stop at each turn",
     )
 
 
@@ -63,18 +66,21 @@ def text2():
             num_games, player1_stoppingscore, player2_stoppingscore
         )
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
+            "graph.html",
+            labels=[i for i in range(1, len(res)+1)],
+            values=res,
+            values2=[100-i for i in res],
             player1_stoppingscore=player1_stoppingscore,
-            player2_stoppingscore=player2_stoppingscore,
+            player2_stoppingscore=str(player2_stoppingscore)+" dice",
+            player1_label="Player A rolled until they scored: ",
+            player2_label="Player B rolled until they had: "
         )
     return render_template(
         "form3inputs.html",
         title="Home",
         form_title="Simulate a player who rolls until they have a certain amount of dice each turn against one who rolls until they reach a certain score each turn",
-        label1="Score for player 1 to stop at each turn",
-        label2="Number of dice for player 2 to stop at each turn",
+        label1="Score for player A to stop at each turn",
+        label2="Number of dice for player B to stop at each turn",
     )
 
 
@@ -89,25 +95,28 @@ def text3():
             num_games, player1_stoppingscore, player2_stoppingscore
         )
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
-            player1_stoppingscore=player1_stoppingscore,
-            player2_stoppingscore=player2_stoppingscore,
+            "graph.html",
+            labels=[i for i in range(1, len(res)+1)],
+            values=res,
+            values2=[100-i for i in res],
+            player1_stoppingscore=str(player1_stoppingscore)+" dice remaining",
+            player2_stoppingscore=str(player2_stoppingscore)+" dice remaining",
+            player1_label="Player A rolled until they had: ",
+            player2_label="Player B rolled until they had: "
         )
     return render_template(
         "form3inputs.html",
         title="Home",
         form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
-        label1="Number of dice for player 1 to stop at each turn",
-        label2="Number of dice for player 2 to stop at each turn",
+        label1="Number of dice for player A to stop at each turn",
+        label2="Number of dice for player B to stop at each turn",
     )
 
 
 # strategy AB vs A
 # simulate_2stratBvsABplayers(50, 1, 4, 350)
 # 2 strategy B players face off
-@app.route("/stratABvA", methods=["GET", "POST"])
+@app.route("/stratBvsAB", methods=["GET", "POST"])
 def textP():
     if request.method == "POST":
         num_games = request.form["num_games"]
@@ -118,20 +127,54 @@ def textP():
             num_games, p1dice, p2dice, p2score
         )
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
+            "graph.html",
+            labels=[i for i in range(1, len(res)+1)],
+            values=res,
+            values2=[100-i for i in res],
+            player1_stoppingscore=str(p1dice)+" dice remaining",
+            player2_stoppingscore=str(p2dice)+" dice remaining",
+            player1_label="Player A rolled until they had: ",
+            player2_label="Player B rolled until they either scored "+ str(p2score) + " or had: "
         )
     return render_template(
         "form4inputs.html",
         title="Home",
         form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
-        label1="Number of dice for player 1 to stop at each turn",
-        label2="Number of dice for player 2 to stop at each turn",
-        label3="Player 2 score to stop at each turn",
+        label1="Number of dice for player A to stop at each turn",
+        label2="Number of dice for player B to stop at each turn",
+        label3="Player B score to stop at each turn",
     )
 
 
+@app.route("/stratAvsAB", methods=["GET", "POST"])
+def textQ():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        scoretostopat1 = request.form["player1_dicestop"]
+        dicetostopat2 = request.form["player2_dicestop"]
+        score_to_stop_at_turn = request.form["player2_score"]
+        res = dicethousand.simulate_2stratAvsABplayers(
+            num_games, scoretostopat1, dicetostopat2, score_to_stop_at_turn
+        )
+        return render_template(
+            "graph.html",
+            labels=[i for i in range(1, len(res)+1)],
+            values=res,
+            values2=[100-i for i in res],
+            player1_stoppingscore=scoretostopat1,
+            player2_stoppingscore=str(dicetostopat2)+" dice remaining",
+            player1_label="Score for player A to stop rolling at:  ",
+            player2_label="Player B rolled until they either scored "+ str(score_to_stop_at_turn) + " or had less than "
+        )
+    return render_template(
+        "form4inputs.html",
+        title="Home",
+        form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
+        label1="Score for player A to stop rolling at: ",
+        label2="Number of dice for player B to stop at each turn",
+        label3="Player B score to stop at each turn",
+    )
+    
 # strategy AB vs AB
 # BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
 
@@ -245,4 +288,13 @@ def text7():
     )
 
 
-# @app.route("/demoResults")
+@app.route("/graphtest")
+def text8():
+    data = [
+        ('a', 2),
+        ('b', 3),
+        ('c', 4)
+    ]
+    labels = [row[0] for row in data]
+    vals = [row[1] for row in data]
+    return render_template('graph.html', labels=labels, values=vals)
