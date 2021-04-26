@@ -204,7 +204,7 @@ def text7():
         not_endturn = True
         if request.form.getlist("end"):
             not_endturn = False
-        u, c = dicethousand.game_func_input(
+        u, c, comp_rolled = dicethousand.game_func_input(
             cpy(u), cpy(cache["computer"]), resp, not_crap_out, not_endturn
         )
         cache["player"] = cpy(u)
@@ -218,6 +218,8 @@ def text7():
             pts=u.getRoundScore(),
             round=cache["current_round"],
             message="message goes here",
+            computer_rolled=comp_rolled,
+            computer_score=cache["computer"].getScore(),
         )
     cache["computer"] = cpy(
         dicethousand.LoudBotPlayer(
@@ -238,6 +240,8 @@ def text7():
         pts=u.getRoundScore(),
         round=cache["current_round"],
         message="Beginning a new game",
+        computer_rolled=0,
+        computer_score=cache["computer"].getScore(),
     )
 
 

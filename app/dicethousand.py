@@ -661,10 +661,10 @@ def game_func_input(
     c = cpy(Computer)
     if not_crap_out:
         u.process_roll(die_to_score, endturn)
-    else:
-        print("crap out 0 points")
-    print("=" * 15)
-    print("Computer turn")
-    print(next(c))
-    print("=" * 15)
-    return (u, c)
+    # else:
+    #     print("crap out 0 points")
+    # print("=" * 15)
+    # print("Computer turn")
+    c_score = next(c)
+    # print("=" * 15)
+    return (u, c, c_score[0])
