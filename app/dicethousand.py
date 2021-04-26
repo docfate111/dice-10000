@@ -58,17 +58,17 @@ def findbeststratA(num_of_games: str, other_player_stops_at=500):
         res = simulate_2stratAplayers(
             int(num_of_games), int(other_player_stops_at), stopscore
         )
-        stopscores_to_winratio[stopscore] = res["b"]
-        # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
+        stopscores_to_winratio[stopscore] = res[-1]
+    # print(stopscores_to_winratio)
     return stopscores_to_winratio
 
 
 def findbeststratB(num_of_games: str, stopdice1=2):
     # find the best strategy for B
     stopscores_to_winratio = {}
-    for stopdice in range(0, 7):
+    for stopdice in range(1, 7):
         res = simulate_2stratBplayers(int(num_of_games), int(stopdice1), stopdice)
-        stopscores_to_winratio[stopdice] = res["b"]
+        stopscores_to_winratio[stopdice] = res[-1]
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
 
@@ -138,7 +138,7 @@ def simulate_2stratBplayers(num_games: str, dicetostopat1: str, dicetostopat2: s
                 a_wins += 1
             count_ += 1
             win_count_a.append((a_wins * 100) / count_)
-    return win_counts
+    return win_count_a
 
 
 def simulate_2stratBvsABplayers(
@@ -203,7 +203,7 @@ def simulate_2stratABvsABplayers(
         name="0",
         stop_at_n_dice=int(dicetostopat1),
         score_to_stop_at_each_turn=int(score_to_stop_at_turn1),
-        strategy="AB"
+        strategy="AB",
     )
     player_B = BotPlayer(
         name="1",

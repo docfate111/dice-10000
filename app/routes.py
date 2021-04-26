@@ -38,13 +38,13 @@ def text():
         )
         return render_template(
             "graph.html",
-            labels=[i for i in range(1, len(res)+1)],
+            labels=[i for i in range(1, len(res) + 1)],
             values=res,
-            values2=[100-i for i in res],
+            values2=[100 - i for i in res],
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
             player1_label="Player A rolled until they scored: ",
-            player2_label="Player B rolled until they scored: "
+            player2_label="Player B rolled until they scored: ",
         )
     return render_template(
         "form3inputs.html",
@@ -67,13 +67,13 @@ def text2():
         )
         return render_template(
             "graph.html",
-            labels=[i for i in range(1, len(res)+1)],
+            labels=[i for i in range(1, len(res) + 1)],
             values=res,
-            values2=[100-i for i in res],
+            values2=[100 - i for i in res],
             player1_stoppingscore=player1_stoppingscore,
-            player2_stoppingscore=str(player2_stoppingscore)+" dice",
+            player2_stoppingscore=str(player2_stoppingscore) + " dice",
             player1_label="Player A rolled until they scored: ",
-            player2_label="Player B rolled until they had: "
+            player2_label="Player B rolled until they had: ",
         )
     return render_template(
         "form3inputs.html",
@@ -96,13 +96,13 @@ def text3():
         )
         return render_template(
             "graph.html",
-            labels=[i for i in range(1, len(res)+1)],
+            labels=[i for i in range(1, len(res) + 1)],
             values=res,
-            values2=[100-i for i in res],
-            player1_stoppingscore=str(player1_stoppingscore)+" dice remaining",
-            player2_stoppingscore=str(player2_stoppingscore)+" dice remaining",
+            values2=[100 - i for i in res],
+            player1_stoppingscore=str(player1_stoppingscore) + " dice remaining",
+            player2_stoppingscore=str(player2_stoppingscore) + " dice remaining",
             player1_label="Player A rolled until they had: ",
-            player2_label="Player B rolled until they had: "
+            player2_label="Player B rolled until they had: ",
         )
     return render_template(
         "form3inputs.html",
@@ -128,13 +128,15 @@ def textP():
         )
         return render_template(
             "graph.html",
-            labels=[i for i in range(1, len(res)+1)],
+            labels=[i for i in range(1, len(res) + 1)],
             values=res,
-            values2=[100-i for i in res],
-            player1_stoppingscore=str(p1dice)+" dice remaining",
-            player2_stoppingscore=str(p2dice)+" dice remaining",
+            values2=[100 - i for i in res],
+            player1_stoppingscore=str(p1dice) + " dice remaining",
+            player2_stoppingscore=str(p2dice) + " dice remaining",
             player1_label="Player A rolled until they had: ",
-            player2_label="Player B rolled until they either scored "+ str(p2score) + " or had: "
+            player2_label="Player B rolled until they either scored "
+            + str(p2score)
+            + " or had: ",
         )
     return render_template(
         "form4inputs.html",
@@ -158,13 +160,15 @@ def textQ():
         )
         return render_template(
             "graph.html",
-            labels=[i for i in range(1, len(res)+1)],
+            labels=[i for i in range(1, len(res) + 1)],
             values=res,
-            values2=[100-i for i in res],
+            values2=[100 - i for i in res],
             player1_stoppingscore=scoretostopat1,
-            player2_stoppingscore=str(dicetostopat2)+" dice remaining",
+            player2_stoppingscore=str(dicetostopat2) + " dice remaining",
             player1_label="Score for player A to stop rolling at:  ",
-            player2_label="Player B rolled until they either scored "+ str(score_to_stop_at_turn) + " or had less than "
+            player2_label="Player B rolled until they either scored "
+            + str(score_to_stop_at_turn)
+            + " or had less than ",
         )
     return render_template(
         "form4inputs.html",
@@ -174,9 +178,47 @@ def textQ():
         label2="Number of dice for player B to stop at each turn",
         label3="Player B score to stop at each turn",
     )
-    
+
+
 # strategy AB vs AB
-# BotPlayer(name="0", score_to_stop_at_each_turn=350, stop_at_n_dice=4, strategy="AB")
+@app.route("/stratABvsAB", methods=["GET", "POST"])
+def textR():
+    if request.method == "POST":
+        num_games = request.form["num_games"]
+        dicetostopat1 = request.form["player1_dicestop"]
+        dicetostopat2 = request.form["player2_dicestop"]
+        score_to_stop_at_turn1 = request.form["player1_score"]
+        score_to_stop_at_turn2 = request.form["player2_score"]
+        res = dicethousand.simulate_2stratABvsABplayers(
+            num_games,
+            dicetostopat1,
+            score_to_stop_at_turn1,
+            dicetostopat2,
+            score_to_stop_at_turn2,
+        )
+        return render_template(
+            "graph.html",
+            labels=[i for i in range(1, len(res) + 1)],
+            values=res,
+            values2=[100 - i for i in res],
+            player1_stoppingscore=str(dicetostopat1) + " dice remaining",
+            player2_stoppingscore=str(dicetostopat2) + " dice remaining",
+            player1_label="Player A rolled until they either scored "
+            + str(score_to_stop_at_turn1)
+            + " or had less than ",
+            player2_label="Player B rolled until they either scored "
+            + str(score_to_stop_at_turn2)
+            + " or had less than ",
+        )
+    return render_template(
+        "form5inputs.html",
+        title="Home",
+        form_title="Simulate 2 players who roll until they have a certain amount of dice each turn",
+        label1="Number of dice for player A to stop at each turn",
+        label4="Score for player A to stop rolling at: ",
+        label2="Number of dice for player B to stop at each turn",
+        label3="Player B score to stop at each turn",
+    )
 
 
 @app.route("/bestA", methods=["GET", "POST"])
@@ -188,11 +230,15 @@ def text4():
             res = dicethousand.findbeststratA(num_games, player1_stoppingscore)
         else:
             res = dicethousand.findbeststratA(num_games)
+        # print(f'labels {list(res.keys())}\nvalues {list(res.values())}')
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
-            player1_stoppingscore=player1_stoppingscore,
+            "graph.html",
+            labels=list(res.keys()),
+            values=list(res.values()),
+            player1_stoppingscore="",
+            player2_stoppingscore="",
+            player1_label="Simulating the best score to stop rolling at",
+            player2_label="",
         )
     return render_template(
         "form2inputs.html",
@@ -212,10 +258,13 @@ def text5():
         else:
             res = dicethousand.findbeststratB(num_games)
         return render_template(
-            "textResults.html",
-            new_text=str(res),
-            num_games=num_games,
-            player1_stoppingscore=player1_stoppingscore,
+            "graph.html",
+            labels=list(res.keys()),
+            values=list(res.values()),
+            player1_stoppingscore="",
+            player2_stoppingscore="",
+            player1_label="Simulating the best number of die to stop rolling at",
+            player2_label="",
         )
     return render_template(
         "form2inputs.html",
@@ -286,15 +335,3 @@ def text7():
         computer_rolled=0,
         computer_score=cache["computer"].getScore(),
     )
-
-
-@app.route("/graphtest")
-def text8():
-    data = [
-        ('a', 2),
-        ('b', 3),
-        ('c', 4)
-    ]
-    labels = [row[0] for row in data]
-    vals = [row[1] for row in data]
-    return render_template('graph.html', labels=labels, values=vals)
