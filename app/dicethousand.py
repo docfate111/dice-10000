@@ -228,10 +228,11 @@ class BotGame:
     def __init__(
         self,
         num_of_players_to_generate=0,
-        ending_score=10000,
+        ending_score=1000,
         score_to_stop_at_each_turn=[],
         playersToAdd=[],
     ):
+        # ending score reduced to 1000 for performance
         random.seed(os.urandom(16))
         if score_to_stop_at_each_turn:
             self.num_of_players = len(score_to_stop_at_each_turn)
@@ -306,14 +307,14 @@ class BotPlayer:
     def __init__(
         self,
         score_to_stop_at_each_turn=500,
-        ending_score=10000,
+        ending_score=1000,
         name="p1",
         num_dice=6,
         stop_at_n_dice=None,
         strategy=None,
     ):
         """
-        add more strategies for computer to use
+        1000 for performance reasons, typically 10000
         """
         self.verbose = False
         self.score = 0

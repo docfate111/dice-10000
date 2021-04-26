@@ -43,6 +43,7 @@ def text():
             values2=[100 - i for i in res],
             player1_stoppingscore=player1_stoppingscore,
             player2_stoppingscore=player2_stoppingscore,
+            graph_label="Number of games played vs percent of games won",
             player1_label="Player A rolled until they scored: ",
             player2_label="Player B rolled until they scored: ",
         )
@@ -67,6 +68,7 @@ def text2():
         )
         return render_template(
             "graph.html",
+            graph_label="Number of games played vs percent of games won",
             labels=[i for i in range(1, len(res) + 1)],
             values=res,
             values2=[100 - i for i in res],
@@ -99,6 +101,7 @@ def text3():
             labels=[i for i in range(1, len(res) + 1)],
             values=res,
             values2=[100 - i for i in res],
+            graph_label="Number of games played vs percent of games won",
             player1_stoppingscore=str(player1_stoppingscore) + " dice remaining",
             player2_stoppingscore=str(player2_stoppingscore) + " dice remaining",
             player1_label="Player A rolled until they had: ",
@@ -129,6 +132,7 @@ def textP():
         return render_template(
             "graph.html",
             labels=[i for i in range(1, len(res) + 1)],
+            graph_label="Number of games played vs percent of games won",
             values=res,
             values2=[100 - i for i in res],
             player1_stoppingscore=str(p1dice) + " dice remaining",
@@ -161,6 +165,7 @@ def textQ():
         return render_template(
             "graph.html",
             labels=[i for i in range(1, len(res) + 1)],
+            graph_label="Number of games played vs percent of games won",
             values=res,
             values2=[100 - i for i in res],
             player1_stoppingscore=scoretostopat1,
@@ -199,6 +204,7 @@ def textR():
         return render_template(
             "graph.html",
             labels=[i for i in range(1, len(res) + 1)],
+            graph_label="Number of games played vs percent of games won",
             values=res,
             values2=[100 - i for i in res],
             player1_stoppingscore=str(dicetostopat1) + " dice remaining",
@@ -232,7 +238,8 @@ def text4():
             res = dicethousand.findbeststratA(num_games)
         # print(f'labels {list(res.keys())}\nvalues {list(res.values())}')
         return render_template(
-            "graph.html",
+            "graph2.html",
+            graph_label="Stopping point vs percent of games won",
             labels=list(res.keys()),
             values=list(res.values()),
             player1_stoppingscore="",
@@ -258,7 +265,8 @@ def text5():
         else:
             res = dicethousand.findbeststratB(num_games)
         return render_template(
-            "graph.html",
+            "graph2.html",
+            graph_label="Stopping point vs percent of games won",
             labels=list(res.keys()),
             values=list(res.values()),
             player1_stoppingscore="",
