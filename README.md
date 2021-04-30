@@ -10,15 +10,14 @@ There are many variations but the rules I'm going with for now are:
 3. if you use up all the dice you can roll again and those points are 
 adding to a running total
 
-# Add later
-- [ ] Front-end
+- [X] Front-end
 - [X] Flask backend
 
 # Strategies
 - [X] Strategy A: Only roll until the score of the turn is up to one number(i.e. 500)
 - [X] Strategy B: Only roll if you have a certain number of dice(1-6)
 - [X] Strategy AB: Strategy AB: roll if more dice than a number otherwise until target score is reached
-- [ ] User input player object to connect with front-end
+- [X] User input player object to connect with front-end
 - [ ] Strategy C: Same as A but don't take triples unless you have to or its 500, 600, or 1000
 - [ ] Strategy D: Same as B but don't take triple unless you have to or its 500, 600, or 1000
 - [ ] Last round/endgame strategy/rules
