@@ -56,7 +56,7 @@ def findbeststratA(num_of_games: str, other_player_stops_at=500):
     stopscores_to_winratio = {}
     for stopscore in range(50, 900, 50):
         res = simulate_2stratAplayers(
-            int(num_of_games), int(other_player_stops_at), stopscore
+            int(num_of_games), stopscore, int(other_player_stops_at)
         )
         stopscores_to_winratio[stopscore] = res[-1]
     # print(stopscores_to_winratio)
@@ -67,7 +67,7 @@ def findbeststratB(num_of_games: str, stopdice1=2):
     # find the best strategy for B
     stopscores_to_winratio = {}
     for stopdice in range(1, 7):
-        res = simulate_2stratBplayers(int(num_of_games), int(stopdice1), stopdice)
+        res = simulate_2stratBplayers(int(num_of_games), stopdice, int(stopdice1))
         stopscores_to_winratio[stopdice] = res[-1]
         # print(f'Stopping at {stopscore}: gives a win ratio of: {res["b"]}')
     return stopscores_to_winratio
