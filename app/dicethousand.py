@@ -720,4 +720,4 @@ def game_func_input(
     # print("Computer turn")
     c_score = next(c)
     # print("=" * 15)
-    return (u, c, c_score[0])
+    return (u, c, c_score)
